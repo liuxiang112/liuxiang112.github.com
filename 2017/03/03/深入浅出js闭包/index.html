@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>深入浅出js闭包 | liuxiang - liuxiang blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="官方的解释是：闭包是一个拥有许多变量和绑定了这些变量的环境的表达式（通常是一个函数），因而这些变量也是该表达式的一部分。读到这里，相信很多人都是一脸懵逼，因为描述的太学术。其实这句话通俗点说就是：JavaScript中的所有的function都是一个闭包。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入浅出js闭包">
+<meta property="og:url" content="https://liuxiang112.github.io/2017/03/03/深入浅出js闭包/index.html">
+<meta property="og:site_name" content="liuxiang">
+<meta property="og:description" content="官方的解释是：闭包是一个拥有许多变量和绑定了这些变量的环境的表达式（通常是一个函数），因而这些变量也是该表达式的一部分。读到这里，相信很多人都是一脸懵逼，因为描述的太学术。其实这句话通俗点说就是：JavaScript中的所有的function都是一个闭包。">
+<meta property="og:updated_time" content="2017-03-08T07:48:55.518Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入浅出js闭包">
+<meta name="twitter:description" content="官方的解释是：闭包是一个拥有许多变量和绑定了这些变量的环境的表达式（通常是一个函数），因而这些变量也是该表达式的一部分。读到这里，相信很多人都是一脸懵逼，因为描述的太学术。其实这句话通俗点说就是：JavaScript中的所有的function都是一个闭包。">
+<meta name="twitter:creator" content="@HKEY_C17">
+<link rel="publisher" href="118157846818083514683">
+<meta property="fb:admins" content="sykiechencixi">
+  
+    <link rel="alternate" href="/atom.xml" title="liuxiang" type="application/atom+xml">
+  
+
+  <!-- favicons -->
+  <link rel="apple-touch-icon" sizes="57x57" href="/css/images/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/css/images/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/css/images/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/css/images/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/css/images/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/css/images/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/css/images/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/css/images/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/css/images/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="/css/images/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/css/images/android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="/css/images/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/css/images/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/css/images/manifest.json">
+  <link rel="mask-icon" href="/css/images/safari-pinned-tab.svg" color="#5bbad5">
+  <link rel="shortcut icon" href="/css/images/favicon.ico">
+  <meta name="msapplication-TileColor" content="#2d89ef">
+  <meta name="msapplication-TileImage" content="/css/images/mstile-144x144.png">
+  <meta name="msapplication-config" content="/css/images/browserconfig.xml">
+  <meta name="theme-color" content="#3B74AC">
+  <!-- end of icons -->
+  <link href="http://fonts.useso.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link href="/css/duoshuo.css" rel="stylesheet" type="text/css">
+
+  <link rel="stylesheet" href="/css/style.css">
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">liuxiang</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon" style="margin-left: 13px;"></a>
+        
+          <a class="main-nav-link" href="/">主页</a>
+        
+          <a class="main-nav-link" href="/archives">小技术</a>
+        
+          <a class="main-nav-link" href="/tags">标签</a>
+        
+          <a class="main-nav-link" href="/archives">总目录</a>
+        
+          <a class="main-nav-link" href="/about">关于我</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        <a id="nav-search-btn" class="nav-icon" style="font-size: 19px; width: 19px; height: 19px; padding: 20px 5px;" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://liuxiang112.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-深入浅出js闭包" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      深入浅出js闭包
+    </h1>
+  
+
+      </header>
+    
+  <div class="article-meta">
+    <a href="/2017/03/03/深入浅出js闭包/" class="article-date">
+  <time datetime="2017-03-03T06:12:58.000Z" itemprop="datePublished">2017-3-3 Fri  14:12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/js基础语法/">js基础语法</a>
+  </div>
+
+  </div>
+
+    <div class="article-entry" itemprop="articleBody">
+      
+        <!-- Table of Contents -->
+      	
+        <p>官方的解释是：闭包是一个拥有许多变量和绑定了这些变量的环境的表达式（通常是一个函数），因而这些变量也是该表达式的一部分。读到这里，相信很多人都是一脸懵逼，因为描述的太学术。其实这句话通俗点说就是：JavaScript中的所有的function都是一个闭包。</p>
+<a id="more"></a>
+<h2 id="一、变量的作用域"><a href="#一、变量的作用域" class="headerlink" title="一、变量的作用域"></a>一、变量的作用域</h2><p>要理解闭包，首先必须理解JavaScript特殊的变量作用域。其实变量的作用域无非就两种：全局变量和局部变量。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"> JavaScript语言的特殊之处就在于函数内部可以直接读取全局变量,如下例子：</div><div class="line">     <span class="keyword">var</span> n=<span class="number">100</span>;</div><div class="line">     <span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        alert(n);</div><div class="line">     &#125;</div><div class="line">     f1();  <span class="comment">//100</span></div><div class="line"></div><div class="line"> 另一方面，在函数外部无法读取函数内的局部变量，如下：</div><div class="line">     <span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        <span class="keyword">var</span> n=<span class="number">100</span>;</div><div class="line">     &#125;</div><div class="line">     alert(n); <span class="comment">//error</span></div><div class="line">这里有一个需要注意的地方：函数内部使用变量的时候，一定要用<span class="keyword">var</span>声明，否则的话此变量实际上是一个全局变量！！！如下：</div><div class="line">     <span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        n=<span class="number">100</span>;</div><div class="line">     &#125;</div><div class="line">     alert(n);  <span class="comment">//100</span></div></pre></td></tr></table></figure>
+<h2 id="二、如何从外部读取局部变量？"><a href="#二、如何从外部读取局部变量？" class="headerlink" title="二、如何从外部读取局部变量？"></a>二、如何从外部读取局部变量？</h2><p>因为一些原因，我们有时候需要得到函数内部的局部变量。但是在正常情况下，这是办不到的，所以我们不得不变通一下来实现。<br>怎么变通呢？那就是在函数的内部再定义一个函数。</p>
+<p>js代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"> <span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    n=<span class="number">100</span>;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">f2</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        alert(n); <span class="comment">//100</span></div><div class="line">&#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>在上面的代码中，函数f2就在函数f1的内部，这时f1内部的所有局部变量对f2都是可见的。但是反过来就不行，f2内部的局部变量，对f1就是不可见的。这就是JavaScript语言特有的“链式作用域”结构，子对象会一级一级向上寻找所有父对象的变量。所以，父对象的所有变量，对子对象都是可见的，反之则不成立。<br>既然f2可以读取f1中的局部变量，那么只要把f2作为返回值，我们不就可以再f1外部读取它的内部变量了吗！代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params"></span>)</span>&#123;</div><div class="line">   n=<span class="number">100</span>;</div><div class="line">   <span class="function"><span class="keyword">function</span> <span class="title">f2</span>(<span class="params"></span>)</span>&#123;</div><div class="line">       alert(n); </div><div class="line">   &#125;</div><div class="line">   <span class="keyword">return</span> f2;</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> result=f1();</div><div class="line">result(); <span class="comment">//100</span></div></pre></td></tr></table></figure>
+<h2 id="三、闭包的概念"><a href="#三、闭包的概念" class="headerlink" title="三、闭包的概念"></a>三、闭包的概念</h2><p>上一节代码中的f2函数就是闭包。<br>通过总结，我对它的理解就是：闭包就是能够读取其他函数内部变量的函数。<br>由于在JavaScript语言中，只有函数内部的子函数才能读取函数的局部变量，因此可以把闭包简单理解成“定义在一个函数内部的函数”。所以在本质上，闭包就是将函数内部和函数外部连接起来的一座桥梁。</p>
+<h2 id="四、闭包的用途"><a href="#四、闭包的用途" class="headerlink" title="四、闭包的用途"></a>四、闭包的用途</h2><p>闭包可以用在许多地方。其中最大的用处有两个：一个是前面提到的可以读取函数内部的局部变量，另一个就是让这些变量的值始终保持在内存中。怎么理解这句话呢？请看下面的代码：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">　　<span class="keyword">function</span> <span class="function"><span class="title">f1</span></span>()&#123;</div><div class="line">　　　　var n=999;</div><div class="line">　　　　nAdd=<span class="function"><span class="title">function</span></span>()&#123;n+=1&#125;</div><div class="line">　　　　<span class="keyword">function</span> <span class="function"><span class="title">f2</span></span>()&#123;</div><div class="line">　　　　　　alert(n);</div><div class="line">　　　　&#125;</div><div class="line">　　　　<span class="built_in">return</span> f2;</div><div class="line">　　&#125;</div><div class="line">　　var result=f1();</div><div class="line">　　result(); // 999</div><div class="line">　　nAdd();</div><div class="line">　　result(); // 1000</div></pre></td></tr></table></figure>
+<p>在这段代码中，result实际上就是闭包f2函数。它一共运行了两次，第一次的值是999，第二次的值是1000。这证明了，函数f1中的局部变量n一直保存在内存中，并没有在f1调用后被自动清除。<br>为什么会这样呢？原因就在于f1是f2的父函数，而f2被赋给了一个全局变量，这导致f2始终在内存中，而f2的存在依赖于f1，因此f1也始终在内存中，不会在调用结束后，被垃圾回收机制（garbage collection）回收。<br>这段代码中另一个值得注意的地方，就是“nAdd=function(){n+=1}”这一行，首先在nAdd前面没有使用var关键字，因此nAdd是一个全局变量，而不是局部变量。其次，nAdd的值是一个匿名函数（anonymousfunction），而这个匿名函数本身也是一个闭包，所以nAdd相当于是一个setter，可以在函数外部对函数内部的局部变量进行操作。 </p>
+<h2 id="使用闭包的注意事项"><a href="#使用闭包的注意事项" class="headerlink" title="使用闭包的注意事项"></a>使用闭包的注意事项</h2><p>1由于闭包会使得函数中的变量都被保存在内存中，内存消耗很大，所以不能滥用闭包，否则会造成网页的性能问题，在IE中可能导致内存泄露。解决方法是，在退出函数之前，将不使用的局部变量全部删除。<br>2闭包会在父函数外部，改变父函数内部变量的值。所以，如果你把父函数当作对象（object）使用，把闭包当作它的公用方法（PublicMethod），把内部变量当作它的私有属性（private value），这时一定要小心，不要随便改变父函数内部变量的值。 </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a href="https://liuxiang112.github.io/2017/03/03/深入浅出js闭包/#ds-thread" class="ds-thread-count article-comment-link" data-thread-key="2017/03/03/深入浅出js闭包/">评论</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/javascript/">javascript</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/01/03/github本地环境搭建/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">github本地环境搭建</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+
+<!-- 多说评论框 start -->
+	<div id="ds-thread" class="ds-thread" data-thread-key="2017/03/03/深入浅出js闭包/" data-title="深入浅出js闭包" data-url="https://liuxiang112.github.io/2017/03/03/深入浅出js闭包/" data-author-key="233"></div>
+<!-- 多说评论框 end -->
+</section>
+</section>
+        
+          
+<aside id="sidebar">
+
+  
+    <div class="widget-wrap">
+  <h3 class="widget-title">关于我 ● About Me</h3>
+  <ul class="widget about-me">
+    <li><img class="author" title="About me" src="/css/images/avatar.jpg" /></li>
+    
+    <li>刘享</li>
+    
+    <li>web前端开发</li>
+    
+    <li>微信：lxhaohaohao</li>
+    
+  </ul>
+</div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近文章 ● Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/03/03/深入浅出js闭包/">深入浅出js闭包</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/03/github本地环境搭建/">github本地环境搭建</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/27/web页面优化/">web页面优化</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/22/html5移动端适配规则/">html5移动端适配规则</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/30/JavaScript中的prototype原型/">JavaScript中的prototype原型</a>
+          </li>
+        
+          <li>
+            <a href="/2016/07/30/hexo搭建免费博客/">使用github hexo搭建免费博客</a>
+          </li>
+        
+          <li>
+            <a href="/2015/12/22/js特效动画之切换/">js特效动画之切换</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类 ● Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Mobile/">Mobile</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/js基础语法/">js基础语法</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/免费博客/">免费博客</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+<div class="widget-wrap">
+  <h3 class="widget-title">友情链接 ● Links</h3>
+  <ul class="widget">
+    
+    <li><a href="http://www.lynx.im/friends" target="_BLANK">●&emsp;Yay Ka-Boom-Boom</a></li>
+    
+    <li><a href="http://www.wangyufeng.org/" target="_BLANK">●&emsp;王雨峰同学吃了一块二向箔</a></li>
+    
+    <li><a href="https://www.anotherhome.net/link" target="_BLANK">●&emsp;Anotherhome - ペロペロ</a></li>
+    
+    <li><a href="http://pengzhendong.cn/friends/" target="_BLANK">●&emsp;RandyPeng&#39;s Notes</a></li>
+    
+    <li><a href="http://www.bananau.com/?page_id=15" target="_BLANK">●&emsp;香蕉</a></li>
+    
+    <li><a href="http://navyblue.top/" target="_BLANK">●&emsp;燃冰非冰 - Yogi Ai</a></li>
+    
+    <li><a href="http://codecloud.net/links" target="_BLANK">●&emsp;程序员的资料库</a></li>
+    
+    <li><a href="http://www.code4apk.com/links" target="_BLANK">●&emsp;Android 源码下载</a></li>
+    
+    <li><a href="http://sukai.me/" target="_BLANK">●&emsp;苏苏</a></li>
+    
+    <li><a href="https://touko.moe/links" target="_BLANK">●&emsp;Toukou&#39;s diary</a></li>
+    
+    <li><a href="http://iblogs.xyz/" target="_BLANK">●&emsp;有趣独立技术博客导航</a></li>
+    
+  </ul>
+</div>
+
+
+  
+
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner" style="text-align:center;">
+	  <table width="100%" border="0">
+        <tr>
+          <td style="text-align:center; border: 0;">
+            Copyright &copy; 2015-2017 liuxiang<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>&emsp;
+		Search Engine by <a href="http://tinysou.com/" target="_blank">Tinysou</a>&nbsp;
+		  </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">主页</a>
+  
+    <a href="/archives" class="mobile-nav-link">小技术</a>
+  
+    <a href="/tags" class="mobile-nav-link">标签</a>
+  
+    <a href="/archives" class="mobile-nav-link">总目录</a>
+  
+    <a href="/about" class="mobile-nav-link">关于我</a>
+  
+</nav>
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"hkeyc17"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = '/js/ds_embed.js';
+		<!-- ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js'; -->
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+<script>
+var option = {
+  engineKey: '695d0ac61847d1e43931'
+};
+(function(w,d,t,u,n,s,e){
+  s = d.createElement(t);
+  s.src = u;
+  s.async = 1;
+  w[n] = function(r){
+    w[n].opts = r;
+  };
+  e = d.getElementsByTagName(t)[0];
+  e.parentNode.insertBefore(s, e);
+})(window,document,'script','//tinysou-cdn.b0.upaiyun.com/ts.js','_ts');
+_ts(option);
+</script>
+<script src="http://lib.sinaapp.com/js/jquery/2.0.3/jquery-2.0.3.min.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+if (typeof jQuery == 'undefined') {
+  document.write(unescape("%3Cscript src='/js/jquery-2.0.3.min.js' type='text/javascript'%3E%3C/script%3E"));
+}
+// ]]>
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+<div class="bottom-btn">
+
+	<a class="icon-gotop" href="javascript:void(0)" title="返回顶部"></a>
+	<script src="/js/gotop.js"></script>
+	<!--
+	<script src="/js/gotop.js"></script>
+	-->
+
+</div>
+
+
+<script src="/js/script.js"></script>
+<!-- Baidu Share Start --->
+<script>window._bd_share_config={"common":{"bdSnsKey":{"tsina":"1714312189"},"bdWbuid":3904642734,"bdText":"","bdMini":"2","bdMiniList":["douban","kaixin001","tieba","tsohu","sqq","youdao","qingbiji","mail","linkedin","mshare","copy","print"],"bdStyle":"1","bdSize":"24"},"share":{"bdSize":16}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<!-- Baidu Share End --->
+
+  </div>
+</body>
+</html>
