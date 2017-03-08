@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /fancybox/
+Disallow: /archives/
+Disallow: /tags/
+Disallow: /test/
+Sitemap: http://www.devchen.com/sitemap.xml
